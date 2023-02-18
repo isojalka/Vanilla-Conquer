@@ -258,6 +258,7 @@ inline static void _splitpath(const char* path, char* drive, char* dir, char* fn
     }
 }
 
+#ifndef __MORPHOS__
 inline static char* strupr(char* str)
 {
     for (int i = 0; i < strlen(str); i++)
@@ -275,6 +276,7 @@ inline static void strrev(char* str)
         str[len - i - 1] = c;
     }
 }
+#endif
 
 inline static void _strlwr(char* str)
 {
