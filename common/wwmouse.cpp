@@ -618,7 +618,7 @@ int WWMouseClass::Get_Mouse_Y(void)
  *=============================================================================================*/
 void WWMouseClass::Get_Mouse_XY(int& x, int& y)
 {
-#if defined(SDL_BUILD)
+#ifdef NEW_VIDEO_BUILD
     Get_Video_Mouse(x, y);
 #elif defined(_WIN32)
     POINT pt;
@@ -854,7 +854,7 @@ void* WWMouseClass::Set_Mouse_Cursor(int hotspotx, int hotspoty, Cursor* cursor)
     result = PrevCursor;
     PrevCursor = cursor;
 
-#ifdef SDL_BUILD
+#ifdef NEW_VIDEO_BUILD
     Set_Video_Cursor(MouseCursor, CursorWidth, CursorHeight, MouseXHot, MouseYHot);
 #endif
 
