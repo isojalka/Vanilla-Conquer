@@ -40,6 +40,10 @@
 #include "common/utfargs.h"
 #include "settings.h"
 
+extern "C" {
+int __stack = 1024 * 1024;
+}
+
 bool Read_Private_Config_Struct(FileClass& file, NewConfigType* config);
 void Print_Error_End_Exit(char* string);
 void Print_Error_Exit(char* string);

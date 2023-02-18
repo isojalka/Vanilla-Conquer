@@ -40,6 +40,10 @@
 #include "common/paths.h"
 #include "common/utfargs.h"
 
+extern "C" {
+int __stack = 1024 * 1024;
+};
+
 extern char RedAlertINI[_MAX_PATH];
 
 bool Read_Private_Config_Struct(FileClass& file, NewConfigType* config);
