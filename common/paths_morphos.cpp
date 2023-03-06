@@ -9,6 +9,8 @@
 // distributed with this program. You should have received a copy of the
 // GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
+#include <proto/dos.h>
+
 #include "paths.h"
 #include <cstdio>
 #include <cstdlib>
@@ -88,6 +90,11 @@ std::string PathsClass::Concatenate_Paths(const char* path1, const char* path2)
             return std::string(path1) + "/" + path2;
         }
     }
+}
+
+std::string PathsClass::Get_Filename(const char *path)
+{
+    return FilePart(path);
 }
 
 std::string PathsClass::Argv_Path(const char* cmd_arg)
