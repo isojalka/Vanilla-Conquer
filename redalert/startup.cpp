@@ -34,15 +34,23 @@
  *   main -- Initial startup routine (preps library systems).                                  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+#ifdef __MORPHOS__
+#include <proto/dos.h>
+#include <proto/intuition.h>
+
+#undef VOLATILE
+#undef SINGLE
+
+extern "C" {
+int __stack = 1024 * 1024;
+};
+#endif
+
 #include "function.h"
 #include "language.h"
 #include "settings.h"
 #include "common/paths.h"
 #include "common/utfargs.h"
-
-extern "C" {
-int __stack = 1024 * 1024;
-};
 
 extern char RedAlertINI[_MAX_PATH];
 
@@ -279,6 +287,16 @@ int DLL_Startup(const char* command_line_in)
 }
 #endif //REMASTER_BUILD
 
+#ifdef __MORPHOS__
+const char* RequiredFiles[] = {
+    "PROGDIR:data/redalert.mix",
+    "PROGDIR:data/allied/main.mix",
+    "PROGDIR:data/soviet/main.mix",
+};
+#endif
+
+#define NUM_REQUIREDFILES (sizeof(RequiredFiles) / sizeof(*RequiredFiles))
+
 int main(int argc, char* argv[])
 {
     UtfArgs args(argc, argv);
@@ -289,6 +307,38 @@ int main(int argc, char* argv[])
 
         return (EXIT_FAILURE);
     }
+
+#ifdef __MORPHOS__
+    {
+        unsigned int i;
+        BPTR lock;
+
+        for (i = 0; i < NUM_REQUIREDFILES; i++) {
+            lock = Lock(RequiredFiles[i], ACCESS_READ);
+            if (!lock) {
+                break;
+            }
+
+            UnLock(lock);
+        }
+
+        if (i != NUM_REQUIREDFILES) {
+            struct EasyStruct es;
+
+            es.es_StructSize = sizeof(es);
+            es.es_Flags = 0;
+            es.es_Title = (UBYTE*)"Vanilla RA";
+            es.es_TextFormat = (UBYTE*)"Incomplete installation. Please run the game data installer.";
+            es.es_GadgetFormat = (UBYTE*)"Quit";
+
+            EasyRequest(0, &es, 0, 0);
+
+            return 0;
+        }
+    }
+
+    UnLock(CreateDir("PROGDIR:user"));
+#endif
 
     /*
     **	Remember the current working directory and drive.

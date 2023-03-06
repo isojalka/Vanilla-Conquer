@@ -50,6 +50,12 @@
 
 //#include "WolDebug.h"
 
+#ifdef __MORPHOS__
+extern "C" {
+int ftime(struct timeb* tp);
+}
+#endif
+
 /*
 ********************************* Globals ***********************************
 */
