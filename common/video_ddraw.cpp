@@ -704,6 +704,10 @@ bool Set_Video_Mode(int w, int h, int bits_per_pixel)
     return true;
 }
 
+void Refresh_Video_Mode()
+{
+}
+
 /***********************************************************************************************
  * Reset_Video_Mode -- Resets video mode and deletes Direct Draw Object                        *
  *                                                                                             *

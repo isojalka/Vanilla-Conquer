@@ -1,6 +1,7 @@
 #include "settings.h"
 #include "ini.h"
 #include "miscasm.h"
+#include "video.h"
 
 SettingsClass Settings;
 
@@ -32,6 +33,7 @@ SettingsClass::SettingsClass()
     Video.Scaler = "nearest";
     Video.Driver = "default";
     Video.PixelFormat = "default";
+    Video.PixelDepth24BPP = false;
 }
 
 void SettingsClass::Load(INIClass& ini)
@@ -65,6 +67,7 @@ void SettingsClass::Load(INIClass& ini)
     Video.Scaler = ini.Get_String("Video", "Scaler", Video.Scaler);
     Video.Driver = ini.Get_String("Video", "Driver", Video.Driver);
     Video.PixelFormat = ini.Get_String("Video", "PixelFormat", Video.PixelFormat);
+    Video.PixelDepth24BPP = ini.Get_Bool("Video", "PixelDepth24BPP", Video.PixelDepth24BPP);
 
     /*
     ** VQA and WSA interpolation mode 0 = scanlines, 1 = vertical doubling, 2 = linear
@@ -106,9 +109,22 @@ void SettingsClass::Save(INIClass& ini)
     ini.Put_String("Video", "Scaler", Video.Scaler);
     ini.Put_String("Video", "Driver", Video.Driver);
     ini.Put_String("Video", "PixelFormat", Video.PixelFormat);
+    ini.Put_Bool("Video", "PixelDepth24BPP", Video.PixelDepth24BPP);
 
     /*
     ** VQA and WSA interpolation mode 0 = scanlines, 1 = vertical doubling, 2 = linear
     */
     ini.Put_Int("Video", "InterpolationMode", Video.InterpolationMode);
+}
+
+void SettingsClass::Set_Windowed(bool newvalue)
+{
+    Settings.Video.Windowed = newvalue;
+    Refresh_Video_Mode();
+}
+
+void SettingsClass::Set_PixelDepth24BPP(bool newvalue)
+{
+    Settings.Video.PixelDepth24BPP = newvalue;
+    Refresh_Video_Mode();
 }

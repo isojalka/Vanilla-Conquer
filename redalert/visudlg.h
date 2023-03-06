@@ -47,6 +47,8 @@ private:
         BUTTON_COLOR,
         BUTTON_CONTRAST,
         BUTTON_TINT,
+        BUTTON_FULLSCREEN,
+        BUTTON_PIXELDEPTH,
         BUTTON_RESET,
         BUTTON_OPTIONS,      // Button number for "Options menu"
         OPTION_WIDTH = 216,  // Width of dialog box.
@@ -73,6 +75,8 @@ public:
     int OptionHeight; // Height of dialog box.
     int OptionX;
     int OptionY;
+    int OptionInnerX;
+    int OptionInnerWidth;
     int TextX;          // Title's x pos
     int TextY;          // Add 11 for each following line
     int SliderX;        // Slider's x pos
@@ -82,6 +86,11 @@ public:
     int SliderYSpacing; // Vertical spacing between sliders.
     int ButtonX;        // Options button x pos
     int ButtonY;        // Options button y pos
+    int OnOffWidth;
+    int FullscreenX;
+    int FullscreenY;
+    int PixelDepthX;
+    int PixelDepthY;
 };
 
 #endif

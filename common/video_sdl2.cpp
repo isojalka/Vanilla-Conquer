@@ -459,6 +459,10 @@ void Get_Video_Mouse(int& x, int& y)
     }
 }
 
+void Refresh_Video_Mode()
+{
+}
+
 /***********************************************************************************************
  * Reset_Video_Mode -- Resets video mode and deletes Direct Draw Object                        *
  *                                                                                             *

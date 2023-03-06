@@ -27,6 +27,10 @@
 #include <alc.h>
 #endif
 
+#ifdef MORPHOS_AUDIO_BUILD
+#include <chrono>
+#endif
+
 typedef struct _VQAHandle VQAHandle;
 
 typedef enum
@@ -61,13 +65,17 @@ typedef struct
     unsigned AudBufPos;
     int16_t* IsLoaded;
     unsigned NumAudBlocks;
+#ifndef __MORPHOS__
     unsigned field_10; // block position?
     unsigned field_14; // block position for IsLoaded?
+#endif
     uint8_t* TempBuf;
     unsigned TempBufSize;
     unsigned TempBufLen;
     unsigned Flags;
+#ifndef __MORPHOS__
     unsigned PlayPosition;
+#endif
     unsigned SamplesPlayed;
     unsigned NumSkipped;
     uint16_t SampleRate;  // 22050, 44100, etc.
@@ -78,22 +86,47 @@ typedef struct
 #if defined _WIN32
     MMRESULT SoundTimerHandle;
 #endif
-    int field_7C;
 #if defined _WIN32 && !defined OPENAL_BUILD
     LPDIRECTSOUNDBUFFER PrimaryBufferPtr;
     WAVEFORMATEX BuffFormat;
     DSBUFFERDESC BufferDesc;
 #endif
-    int16_t field_AA;
+#ifndef __MORPHOS__
     unsigned BuffBytes; // HMIBufSize * 4 set field_AC, and field_AC sets dwBufferBytes.
     unsigned field_B0;  // current chunk position or offset?
     int field_B4;       // use to set ChunksMovedToAudioBuffer in VQA_GetTime
     int field_B8;       // use to set LastChunkPosition in VQA_GetTime
     int field_BC;       // set when the sound object is created.
     int field_C0;       // set when the sound buffer is created.
+#endif
 #ifdef OPENAL_BUILD
     ALuint OpenALSource;
     ALuint AudioBuffers[OPENAL_BUFFER_COUNT];
+#endif
+#ifdef MORPHOS_AUDIO_BUILD
+    struct Task* MainTask;
+    struct SignalSemaphore* Semaphore;
+    bool DoQuit;
+
+    bool ThreadInitOK;
+    int ThreadSignal;
+
+    std::chrono::time_point<std::chrono::steady_clock> LastCompletedRequestTimePoint;
+
+    struct MsgPort* threadmp;
+    struct VQAThreadMessage* threadmessage;
+    struct Process* process;
+    struct MsgPort* ahimp;
+
+    struct
+    {
+        struct AHIRequest* ahireq;
+        bool ahireqsent;
+    } reqs[2];
+    unsigned int nextreq;
+    unsigned int nextplaybackblock;
+    unsigned int nextcopyblock;
+    unsigned completedreqcount;
 #endif
 } VQAAudio;
 
