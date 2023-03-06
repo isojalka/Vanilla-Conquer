@@ -2062,6 +2062,8 @@ int Load_Interpolated_Palettes(char const* filename, bool add)
         file.Open(READ);
         file.Read(&num_palettes, 4);
 
+        num_palettes = le32toh(num_palettes);
+
         for (i = 0; i < num_palettes; i++) {
             InterpolatedPalettes[i + start_palette] = (unsigned char*)malloc(65536);
             memset(InterpolatedPalettes[i + start_palette], 0, 65536);
@@ -3986,13 +3988,13 @@ void Shake_The_Screen(int shakes, HousesType house)
         } while (newyoff == oldyoff);
         switch (newyoff) {
         case -1:
-            HidPage.Blit(SeenBuff, 0, 2, 0, 0, 640, 398);
+            HidPage.Blit(SeenBuff, 0, 2, 0, 0, ScreenWidth, ScreenHeight - 2);
             break;
         case 0:
             HidPage.Blit(SeenBuff);
             break;
         case 1:
-            HidPage.Blit(SeenBuff, 0, 0, 0, 2, 640, 398);
+            HidPage.Blit(SeenBuff, 0, 0, 0, 2, ScreenWidth, ScreenHeight - 2);
             break;
         }
         Frame_Limiter();
