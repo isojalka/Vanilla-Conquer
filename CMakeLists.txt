@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.9)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 include(FeatureSummary)
@@ -57,6 +57,8 @@ if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "MorphOS")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -noixemul")
+
     option(MORPHOS_AUDIO "Enable the MorphOS audio backend." ON)
     option(MORPHOS_VIDEO "Enable the MorphOS video backend." ON)
     add_feature_info(MorphOSAudio MORPHOS_AUDIO "MorphOS audio backend")
