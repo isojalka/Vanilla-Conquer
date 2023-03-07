@@ -27,8 +27,8 @@ private:
     struct RastPort mouse_cursor_rastport;
     bool mouse_cursor_visible;
 
-    unsigned int palette_cursor[256];
     unsigned char palette_cgx[256 * 4];
+    unsigned int palette_cursor[256];
     struct MsgPort* port_screen_buffer_display;
     struct MsgPort* port_screen_buffer_write;
     struct RastPort rastport;
