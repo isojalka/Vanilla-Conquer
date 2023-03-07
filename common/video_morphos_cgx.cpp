@@ -32,8 +32,10 @@ VideoMorphOSCGX::VideoMorphOSCGX(int width, int height)
 {
     current_screen_buffer = 0;
     mouse_cursor_bitmap = 0;
+    mouse_cursor_object = 0;
     mouse_cursor_visible = false;
     memset(palette_cgx, 0, sizeof(palette_cgx));
+    memset(palette_cursor, 0, sizeof(palette_cursor));
     port_screen_buffer_display = 0;
     port_screen_buffer_write = 0;
     screen_buffers[0] = 0;
@@ -42,6 +44,7 @@ VideoMorphOSCGX::VideoMorphOSCGX(int width, int height)
     screen_buffers_swappable = 0;
     screen_buffers_writable = 0;
     screen_depth = 0;
+    memset(screen_palette, 0, sizeof(screen_palette));
     screen_palette[0] = 256 << 16;
     screen_palette[1 + (3 * 256)] = 0;
 }
