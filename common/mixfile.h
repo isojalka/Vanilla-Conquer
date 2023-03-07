@@ -31,12 +31,6 @@
 #include "rndstraw.h"
 
 #ifndef _WIN32
-#ifdef __MORPHOS__
-extern "C" {
-char* basename(char* path);
-}
-#endif
-#else
 #include <libgen.h> // For basename()
 #endif
 
