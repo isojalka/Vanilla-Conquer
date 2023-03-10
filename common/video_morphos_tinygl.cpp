@@ -35,8 +35,10 @@ VideoMorphOSTinyGL::VideoMorphOSTinyGL(int width, int height)
     TinyGLBase = 0;
     __tglContext = 0;
     memset(vertex_coords_display, 0, sizeof(vertex_coords_display));
+    memset(vertex_coords_bottom_bar, 0, sizeof(vertex_coords_bottom_bar));
     memset(vertex_coords_left_bar, 0, sizeof(vertex_coords_left_bar));
     memset(vertex_coords_right_bar, 0, sizeof(vertex_coords_right_bar));
+    memset(vertex_coords_top_bar, 0, sizeof(vertex_coords_top_bar));
 
     use_15bpp = !Settings.Video.PixelDepth24BPP;
 }
@@ -313,6 +315,15 @@ void VideoMorphOSTinyGL::Recalculate_Window()
     vertex_coords_display[3].X = gl_scale_x;
     vertex_coords_display[3].Y = gl_scale_y;
 
+    vertex_coords_bottom_bar[0].X = -gl_scale_x;
+    vertex_coords_bottom_bar[0].Y = 1;
+    vertex_coords_bottom_bar[1].X = -gl_scale_x;
+    vertex_coords_bottom_bar[1].Y = gl_scale_y;
+    vertex_coords_bottom_bar[2].X = gl_scale_x;
+    vertex_coords_bottom_bar[2].Y = 1;
+    vertex_coords_bottom_bar[3].X = gl_scale_x;
+    vertex_coords_bottom_bar[3].Y = gl_scale_y;
+
     vertex_coords_left_bar[0].X = -1;
     vertex_coords_left_bar[0].Y = -1;
     vertex_coords_left_bar[1].X = -1;
@@ -330,6 +341,15 @@ void VideoMorphOSTinyGL::Recalculate_Window()
     vertex_coords_right_bar[2].Y = -1;
     vertex_coords_right_bar[3].X = 1;
     vertex_coords_right_bar[3].Y = 1;
+
+    vertex_coords_top_bar[0].X = -gl_scale_x;
+    vertex_coords_top_bar[0].Y = -1;
+    vertex_coords_top_bar[1].X = -gl_scale_x;
+    vertex_coords_top_bar[1].Y = -gl_scale_y;
+    vertex_coords_top_bar[2].X = gl_scale_x;
+    vertex_coords_top_bar[2].Y = -1;
+    vertex_coords_top_bar[3].X = gl_scale_x;
+    vertex_coords_top_bar[3].Y = -gl_scale_y;
 }
 
 void VideoMorphOSTinyGL::RefreshMouseCursor(void)
@@ -375,10 +395,16 @@ void VideoMorphOSTinyGL::Render_Frame(const void* displaybuffer)
         /* Erase the area around where the display is drawn, as the mouse cursor might previously have been drawing there and left a trail. */
         glBindTexture(GL_TEXTURE_2D, texture_id_black);
 
+        glVertexPointer(2, GL_FLOAT, 0, vertex_coords_bottom_bar);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
         glVertexPointer(2, GL_FLOAT, 0, vertex_coords_left_bar);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
         glVertexPointer(2, GL_FLOAT, 0, vertex_coords_right_bar);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+        glVertexPointer(2, GL_FLOAT, 0, vertex_coords_top_bar);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
         glBindTexture(GL_TEXTURE_2D, texture_id_display);

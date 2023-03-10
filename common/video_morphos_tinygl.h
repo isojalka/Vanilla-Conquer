@@ -37,8 +37,10 @@ private:
     GLContext* __tglContext;
     bool use_15bpp;
     struct Coordinate2 vertex_coords_display[4];
+    struct Coordinate2 vertex_coords_bottom_bar[4];
     struct Coordinate2 vertex_coords_left_bar[4];
     struct Coordinate2 vertex_coords_right_bar[4];
+    struct Coordinate2 vertex_coords_top_bar[4];
 };
 
 #endif /* VIDEO_MORPHOS_TINYGL_H */
