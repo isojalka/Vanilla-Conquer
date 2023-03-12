@@ -44,6 +44,8 @@
 extern "C" {
 int __stack = 1024 * 1024;
 };
+
+const char *version_string = "$VER: Vanilla TD 1.1 (12.03.2023) MorphOS port by Mark Olsen";
 #endif
 
 #include "function.h"
