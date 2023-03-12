@@ -288,14 +288,14 @@ int DLL_Startup(const char* command_line_in)
 #endif //REMASTER_BUILD
 
 #ifdef __MORPHOS__
-const char* RequiredFiles[] = {
+static const char* RequiredFiles[] = {
     "PROGDIR:data/redalert.mix",
     "PROGDIR:data/allied/main.mix",
     "PROGDIR:data/soviet/main.mix",
 };
-#endif
 
 #define NUM_REQUIREDFILES (sizeof(RequiredFiles) / sizeof(*RequiredFiles))
+#endif
 
 int main(int argc, char* argv[])
 {
