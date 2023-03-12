@@ -38,6 +38,9 @@
 #include <proto/dos.h>
 #include <proto/intuition.h>
 
+#undef VOLATILE
+#undef SINGLE
+
 extern "C" {
 int __stack = 1024 * 1024;
 };
