@@ -278,7 +278,7 @@ int main(int argc, char** argv)
 
             es.es_StructSize = sizeof(es);
             es.es_Flags = 0;
-            es.es_Title = (UBYTE*)"Vanilla RA";
+            es.es_Title = (UBYTE*)"Vanilla TD";
             es.es_TextFormat = (UBYTE*)"Incomplete installation. Please run the game data installer.";
             es.es_GadgetFormat = (UBYTE*)"Quit";
 
