@@ -34,15 +34,20 @@
  *   main -- Initial startup routine (preps library systems).                                  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+#ifdef __MORPHOS__
+#include <proto/dos.h>
+#include <proto/intuition.h>
+
+extern "C" {
+int __stack = 1024 * 1024;
+};
+#endif
+
 #include "function.h"
 #include "common/ini.h"
 #include "common/paths.h"
 #include "common/utfargs.h"
 #include "settings.h"
-
-extern "C" {
-int __stack = 1024 * 1024;
-}
 
 bool Read_Private_Config_Struct(FileClass& file, NewConfigType* config);
 void Print_Error_End_Exit(char* string);
