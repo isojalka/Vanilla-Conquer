@@ -12,6 +12,9 @@ public:
     void Load(INIClass& ini);
     void Save(INIClass& ini);
 
+    void Set_Windowed(bool newvalue);
+    void Set_PixelDepth24BPP(bool newvalue);
+
     struct
     {
         bool RawInput;
@@ -36,6 +39,7 @@ public:
         std::string Scaler;
         std::string Driver;
         std::string PixelFormat;
+        bool PixelDepth24BPP;
     } Video;
 
     struct

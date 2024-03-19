@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.9)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 include(FeatureSummary)
@@ -54,6 +54,20 @@ if(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     if(MAKE_BUNDLE)
         set(MAKE_BUNDLE_OPTION MACOSX_BUNDLE)
     endif()
+endif()
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "MorphOS")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -noixemul")
+
+    option(MORPHOS_AUDIO "Enable the MorphOS audio backend." ON)
+    option(MORPHOS_VIDEO "Enable the MorphOS video backend." ON)
+    add_feature_info(MorphOSAudio MORPHOS_AUDIO "MorphOS audio backend")
+    add_feature_info(MorphOSVideo MORPHOS_VIDEO "MorphOS video backend")
+    add_definitions(-D_NO_PPCINLINE)
+    set(OPENAL OFF)
+    set(NETWORKING OFF)
+    set(SDL1 OFF)
+    set(SDL2 OFF)
 endif()
 
 add_feature_info(RemasterTD BUILD_REMASTERTD, "Remastered Tiberian Dawn dll")

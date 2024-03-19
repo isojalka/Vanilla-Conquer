@@ -34,6 +34,20 @@
  *   main -- Initial startup routine (preps library systems).                                  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+#ifdef __MORPHOS__
+#include <proto/dos.h>
+#include <proto/intuition.h>
+
+#undef VOLATILE
+#undef SINGLE
+
+extern "C" {
+int __stack = 1024 * 1024;
+};
+
+const char *version_string = "$VER: Vanilla TD 1.1 (13.03.2023) MorphOS port by Mark Olsen";
+#endif
+
 #include "function.h"
 #include "common/ini.h"
 #include "common/paths.h"
@@ -198,6 +212,33 @@ int DLL_Startup(const char* command_line_in)
 }
 #endif // REMASTER_BUILD
 
+#ifdef __MORPHOS__
+static const char* RequiredFiles[] = {
+    "PROGDIR:data/gdi/general.mix",
+    "PROGDIR:data/gdi/movies.mix",
+    "PROGDIR:data/nod/general.mix",
+    "PROGDIR:data/nod/movies.mix",
+    "PROGDIR:data/aud.mix",
+    "PROGDIR:data/cclocal.mix",
+    "PROGDIR:data/conquer.mix",
+    "PROGDIR:data/deseicnh.mix",
+    "PROGDIR:data/desert.mix",
+    "PROGDIR:data/local.mix",
+    "PROGDIR:data/scores.mix",
+    "PROGDIR:data/sounds.mix",
+    "PROGDIR:data/speech.mix",
+    "PROGDIR:data/temperat.mix",
+    "PROGDIR:data/tempicnh.mix",
+    "PROGDIR:data/transit.mix",
+    "PROGDIR:data/updatec.mix",
+    "PROGDIR:data/update.mix",
+    "PROGDIR:data/winter.mix",
+    "PROGDIR:data/winticnh.mix",
+};
+
+#define NUM_REQUIREDFILES (sizeof(RequiredFiles) / sizeof(*RequiredFiles))
+#endif
+
 int main(int argc, char** argv)
 {
     UtfArgs args(argc, argv);
@@ -218,6 +259,38 @@ int main(int argc, char** argv)
 
 #ifdef JAPANESE
     ForceEnglish = false;
+#endif
+
+#ifdef __MORPHOS__
+    {
+        unsigned int i;
+        BPTR lock;
+
+        for (i = 0; i < NUM_REQUIREDFILES; i++) {
+            lock = Lock(RequiredFiles[i], ACCESS_READ);
+            if (!lock) {
+                break;
+            }
+
+            UnLock(lock);
+        }
+
+        if (i != NUM_REQUIREDFILES) {
+            struct EasyStruct es;
+
+            es.es_StructSize = sizeof(es);
+            es.es_Flags = 0;
+            es.es_Title = (UBYTE*)"Vanilla TD";
+            es.es_TextFormat = (UBYTE*)"Incomplete installation. Please run the game data installer.";
+            es.es_GadgetFormat = (UBYTE*)"Quit";
+
+            EasyRequest(0, &es, 0, 0);
+
+            return 0;
+        }
+    }
+
+    UnLock(CreateDir("PROGDIR:user"));
 #endif
 
     /*

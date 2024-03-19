@@ -43,6 +43,11 @@
 #include <SDL.h>
 #endif
 
+#ifdef __MORPHOS__
+#include <devices/inputevent.h>
+#include <devices/rawkeycodes.h>
+#endif
+
 typedef enum
 {
     WWKEY_SHIFT_BIT = 0x100,
@@ -54,6 +59,7 @@ typedef enum
     WWKEY_BTN_BIT = 0x8000,
 } WWKey_Type;
 
+#ifndef __MORPHOS__
 #ifdef SDL1_BUILD
 #include <SDL_keysym.h>
 #define VK_NONE            SDLK_UNKNOWN
@@ -537,6 +543,7 @@ typedef enum
 #define VK_DOWNLEFT  VK_END
 #define VK_DOWNRIGHT VK_NEXT
 #define VK_ALT       VK_MENU
+#endif
 
 typedef enum KeyASCIIType : unsigned short
 {
@@ -548,10 +555,15 @@ typedef enum KeyASCIIType : unsigned short
     KA_MORE = 1,
     KA_SETBKGDCOL = 2,
     KA_SETFORECOL = 6,
+    KA_BACKSPACE = 8,
+    KA_TAB = 9,
     KA_FORMFEED = 12,
+    KA_RETURN = 13,
     KA_SPCTAB = 20,
     KA_SETX = 25,
     KA_SETY = 26,
+    KA_ESC = 27,
+    KA_EXTEND = 27,
 
     KA_SPACE = 32,  /*   */
     KA_EXCLAMATION, /* ! */
@@ -654,18 +666,10 @@ typedef enum KeyASCIIType : unsigned short
     KA_RBRACE, /* ] */
     KA_TILDA,  /* ~ */
 
+#if 0
 #ifdef SDL_BUILD
-    KA_ESC = 0x1B,
-    KA_EXTEND = 0x1B,
-    KA_RETURN = 0x0D,
-    KA_BACKSPACE = 0x08,
-    KA_TAB = 0x09,
     KA_DELETE = 0x7F,
 #else
-    KA_ESC = VK_ESCAPE,
-    KA_EXTEND = VK_ESCAPE,
-    KA_RETURN = VK_RETURN,
-    KA_BACKSPACE = VK_BACK,
     KA_TAB = VK_TAB,
     KA_DELETE = VK_DELETE, /* <DELETE> */
 #endif
@@ -702,8 +706,121 @@ typedef enum KeyASCIIType : unsigned short
     KA_CTRL_BIT = WWKEY_CTRL_BIT,
     KA_ALT_BIT = WWKEY_ALT_BIT,
     KA_RLSE_BIT = WWKEY_RLS_BIT,
+#endif
 } KeyASCIIType;
 
+#if defined(__MORPHOS__)
+typedef enum KeyNumType : unsigned short
+{
+    KN_NONE = 0,
+
+    KN_1 = (RAWKEY_1 + 1),
+    KN_2 = (RAWKEY_2 + 1),
+    KN_3 = (RAWKEY_3 + 1),
+    KN_4 = (RAWKEY_4 + 1),
+    KN_5 = (RAWKEY_5 + 1),
+    KN_6 = (RAWKEY_6 + 1),
+    KN_7 = (RAWKEY_7 + 1),
+    KN_8 = (RAWKEY_8 + 1),
+    KN_9 = (RAWKEY_9 + 1),
+    KN_0 = (RAWKEY_0 + 1),
+
+    KN_Q = (RAWKEY_Q + 1),
+    KN_W = (RAWKEY_W + 1),
+    KN_E = (RAWKEY_E + 1),
+    KN_R = (RAWKEY_R + 1),
+    KN_T = (RAWKEY_T + 1),
+    KN_Y = (RAWKEY_Y + 1),
+    KN_U = (RAWKEY_U + 1),
+    KN_I = (RAWKEY_I + 1),
+    KN_O = (RAWKEY_O + 1),
+    KN_P = (RAWKEY_P + 1),
+
+    KN_A = (RAWKEY_A + 1),
+    KN_S = (RAWKEY_S + 1),
+    KN_D = (RAWKEY_D + 1),
+    KN_F = (RAWKEY_F + 1),
+    KN_G = (RAWKEY_G + 1),
+    KN_H = (RAWKEY_H + 1),
+    KN_J = (RAWKEY_J + 1),
+    KN_K = (RAWKEY_K + 1),
+    KN_L = (RAWKEY_L + 1),
+
+    KN_Z = (RAWKEY_Z + 1),
+    KN_X = (RAWKEY_X + 1),
+    KN_C = (RAWKEY_C + 1),
+    KN_V = (RAWKEY_V + 1),
+    KN_B = (RAWKEY_B + 1),
+    KN_N = (RAWKEY_N + 1),
+    KN_M = (RAWKEY_M + 1),
+
+    KN_E_HOME = (RAWKEY_KP_7 + 1),
+
+    KN_SPACE = (RAWKEY_SPACE + 1),
+    KN_BACKSPACE = (RAWKEY_BACKSPACE + 1),
+    KN_TAB = (RAWKEY_TAB + 1),
+    KN_KEYPAD_RETURN = (RAWKEY_KP_ENTER + 1),
+
+    KN_RETURN = (RAWKEY_RETURN + 1),
+    KN_ESC = (RAWKEY_ESCAPE + 1),
+
+    KN_PGUP = (RAWKEY_PAGEUP + 1),
+    KN_UPRIGHT = (RAWKEY_PAGEUP + 1),
+    KN_PGDN = (RAWKEY_PAGEDOWN + 1),
+    KN_DOWNRIGHT = (RAWKEY_PAGEDOWN + 1),
+
+    KN_F11 = (RAWKEY_F11 + 1),
+    KN_UP = (RAWKEY_UP + 1),
+    KN_DOWN = (RAWKEY_DOWN + 1),
+    KN_RIGHT = (RAWKEY_RIGHT + 1),
+    KN_LEFT = (RAWKEY_LEFT + 1),
+
+    KN_F1 = (RAWKEY_F1 + 1),
+    KN_F2 = (RAWKEY_F2 + 1),
+    KN_F3 = (RAWKEY_F3 + 1),
+    KN_F4 = (RAWKEY_F4 + 1),
+    KN_F5 = (RAWKEY_F5 + 1),
+    KN_F6 = (RAWKEY_F6 + 1),
+    KN_F7 = (RAWKEY_F7 + 1),
+    KN_F8 = (RAWKEY_F8 + 1),
+    KN_F9 = (RAWKEY_F9 + 1),
+    KN_F10 = (RAWKEY_F10 + 1),
+
+    KN_LSHIFT = (RAWKEY_LSHIFT + 1),
+    KN_RSHIFT = (RAWKEY_RSHIFT + 1),
+    KN_CAPSLOCK =
+        (RAWKEY_CAPSLOCK
+         + 1), /* FIXME: This is probably wrong, KN_CAPITAL probably expects to contain the current caps lock state, not whether the key is being pressed currently. */
+    KN_LCTRL = (RAWKEY_CONTROL + 1),
+    KN_RCTRL = (RAWKEY_CONTROL + 1),
+    KN_LALT = (RAWKEY_LALT + 1),
+    KN_RALT = (RAWKEY_RALT + 1),
+
+    KN_F12 = (RAWKEY_F12 + 1),
+
+    KN_HOME = (RAWKEY_HOME + 1),
+    KN_UPLEFT = (RAWKEY_HOME + 1),
+    KN_END = (RAWKEY_END + 1),
+    KN_DOWNLEFT = (RAWKEY_END + 1),
+
+    KN_NUMLOCK = (RAWKEY_NUMLOCK + 1),
+
+    KN_LMOUSE = IECODE_LBUTTON,
+    KN_RMOUSE = IECODE_RBUTTON,
+    KN_MMOUSE = IECODE_MBUTTON,
+
+    KN_MOUSEWHEEL_UP = (RAWKEY_NM_WHEEL_UP + 1),
+    KN_MOUSEWHEEL_DOWN = (RAWKEY_NM_WHEEL_DOWN + 1),
+
+    KN_CENTER = 0xfe, /* FIXME */
+
+    KN_SHIFT_BIT = WWKEY_SHIFT_BIT,
+    KN_CTRL_BIT = WWKEY_CTRL_BIT,
+    KN_ALT_BIT = WWKEY_ALT_BIT,
+    KN_RLSE_BIT = WWKEY_RLS_BIT,
+    KN_BUTTON = WWKEY_BTN_BIT,
+} KeyNumType;
+#else
 typedef enum KeyNumType : unsigned short
 {
     KN_NONE = 0,
@@ -844,6 +961,7 @@ typedef enum KeyNumType : unsigned short
     KN_MOUSEWHEEL_UP = VK_MOUSEWHEEL_UP,
     KN_MOUSEWHEEL_DOWN = VK_MOUSEWHEEL_DOWN,
 } KeyNumType;
+#endif
 
 typedef enum ScrollDirType : unsigned char
 {

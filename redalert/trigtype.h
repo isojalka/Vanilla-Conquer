@@ -40,6 +40,10 @@
 
 class TriggerClass;
 
+#ifdef __MORPHOS__
+#undef VOLATILE
+#endif
+
 /*
 **	There can be multiple trigger events and trigger actions. This enumeration is used to
 **	indicate if there are multiple events/actions and what their relationship is.

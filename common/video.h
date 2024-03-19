@@ -66,6 +66,7 @@ void Set_Video_Cursor_Clip(bool clipped);
 void Move_Video_Mouse(float xrel, float yrel);
 void Get_Video_Mouse(int& x, int& y);
 void Toggle_Video_Fullscreen();
+void Refresh_Video_Mode();
 void Reset_Video_Mode();
 unsigned Get_Free_Video_Memory();
 void Wait_Blit();

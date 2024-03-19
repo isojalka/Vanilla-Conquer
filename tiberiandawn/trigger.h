@@ -37,6 +37,10 @@
 
 class CCINIClass;
 
+#ifdef __MORPHOS__
+#undef VOLATILE
+#endif
+
 typedef enum EventType : signed char
 {
     EVENT_NONE = -1,

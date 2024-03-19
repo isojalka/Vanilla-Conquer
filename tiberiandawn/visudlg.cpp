@@ -36,6 +36,7 @@
 
 #include "function.h"
 #include "visudlg.h"
+#include "settings.h"
 #include "common/framelimit.h"
 
 int VisualControlsClass::Init(void)
@@ -45,6 +46,8 @@ int VisualControlsClass::Init(void)
     Option_Height = 122 * factor;
     Option_X = (((SeenBuff.Get_Width() - Option_Width) / 2));
     Option_Y = ((SeenBuff.Get_Height() - Option_Height) / 2);
+    OptionInnerX = Option_X + (17 * factor);
+    OptionInnerWidth = Option_Width - (2 * 17 * factor);
     Text_X = Option_X + (28 * factor);
     Text_Y = Option_Y + (30 * factor);
     Slider_X = Option_X + (105 * factor);
@@ -54,6 +57,11 @@ int VisualControlsClass::Init(void)
     Slider_Y_Spacing = 11 * factor;
     Button_X = Option_X + (63 * factor);
     Button_Y = Option_Y + (102 * factor);
+    OnOffWidth = 25 * factor;
+    FullscreenX = OptionInnerX + OptionInnerWidth / 2 - OnOffWidth;
+    FullscreenY = Option_Y + (80 * factor);
+    PixelDepthX = OptionInnerX + OptionInnerWidth - OnOffWidth;
+    PixelDepthY = Option_Y + (80 * factor);
     return (factor);
 }
 /***********************************************************************************************
@@ -76,7 +84,7 @@ void VisualControlsClass::Process(void)
 
     enum
     {
-        NUM_OF_BUTTONS = 6,
+        NUM_OF_BUTTONS = 8,
     };
 
     /*
@@ -139,6 +147,26 @@ void VisualControlsClass::Process(void)
     tint.Set_Value(Options.Get_Tint());
     tint.Add_Tail(optionsbtn);
 
+    TextButtonClass fullscreenbtn(BUTTON_FULLSCREEN, "Fullscreen", TPF_BUTTON, FullscreenX, FullscreenY, OnOffWidth);
+    fullscreenbtn.IsToggleType = true;
+    if (Settings.Video.Windowed) {
+        fullscreenbtn.Turn_Off();
+    } else {
+        fullscreenbtn.Turn_On();
+    }
+    fullscreenbtn.Set_Text(fullscreenbtn.IsOn ? TXT_ON : TXT_OFF);
+    fullscreenbtn.Add_Tail(optionsbtn);
+
+    TextButtonClass pixeldepthbtn(BUTTON_PIXELDEPTH, "Pixel depth", TPF_BUTTON, PixelDepthX, PixelDepthY, OnOffWidth);
+    pixeldepthbtn.IsToggleType = true;
+    if (Settings.Video.PixelDepth24BPP) {
+        pixeldepthbtn.Turn_On();
+    } else {
+        pixeldepthbtn.Turn_Off();
+    }
+    pixeldepthbtn.Set_Text(pixeldepthbtn.IsOn ? "24bpp" : "15bpp");
+    pixeldepthbtn.Add_Tail(optionsbtn);
+
     /*
     **	This causes left mouse button clicking within the confines of the dialog to
     **	be ignored if it wasn't recognized by any other button or slider.
@@ -163,8 +191,10 @@ void VisualControlsClass::Process(void)
     buttons[1] = NULL;
     buttons[2] = NULL;
     buttons[3] = NULL;
-    buttons[4] = &resetbtn;
-    buttons[5] = &optionsbtn;
+    buttons[4] = &fullscreenbtn;
+    buttons[5] = &pixeldepthbtn;
+    buttons[6] = &resetbtn;
+    buttons[7] = &optionsbtn;
 
     buttonsliders[0] = &brightness;
     buttonsliders[1] = &color;
@@ -172,6 +202,8 @@ void VisualControlsClass::Process(void)
     buttonsliders[3] = &tint;
     buttonsliders[4] = NULL;
     buttonsliders[5] = NULL;
+    buttonsliders[6] = NULL;
+    buttonsliders[7] = NULL;
 
     /*
     **	Main Processing Loop.
@@ -232,6 +264,18 @@ void VisualControlsClass::Process(void)
                                  TPF_6PT_GRAD | TPF_RIGHT | TPF_NOSHADOW
                                      | ((curbutton == i) ? TPF_BRIGHT_COLOR : TPF_USE_GRAD_PAL));
             }
+            Fancy_Text_Print("Fullscreen",
+                             FullscreenX - (8 * factor),
+                             FullscreenY,
+                             CC_GREEN,
+                             TBLACK,
+                             TPF_6PT_GRAD | TPF_RIGHT | TPF_NOSHADOW | ((curbutton == BUTTON_FULLSCREEN) ? TPF_BRIGHT_COLOR : TPF_USE_GRAD_PAL));
+            Fancy_Text_Print("Pixel Depth",
+                             PixelDepthX - (8 * factor),
+                             PixelDepthY,
+                             CC_GREEN,
+                             TBLACK,
+                             TPF_6PT_GRAD | TPF_RIGHT | TPF_NOSHADOW | ((curbutton == BUTTON_FULLSCREEN) ? TPF_BRIGHT_COLOR : TPF_USE_GRAD_PAL));
             optionsbtn.Draw_All();
             Show_Mouse();
             partial = false;
@@ -256,6 +300,16 @@ void VisualControlsClass::Process(void)
 
         case (BUTTON_TINT | KN_BUTTON):
             Options.Set_Tint(tint.Get_Value());
+            break;
+
+        case (BUTTON_FULLSCREEN | KN_BUTTON):
+            selection = BUTTON_FULLSCREEN;
+            pressed = true;
+            break;
+
+        case (BUTTON_PIXELDEPTH | KN_BUTTON):
+            selection = BUTTON_PIXELDEPTH;
+            pressed = true;
             break;
 
         case (BUTTON_RESET | KN_BUTTON):
@@ -293,10 +347,7 @@ void VisualControlsClass::Process(void)
                 buttons[curbutton]->Turn_Off();
                 buttons[curbutton]->Flag_To_Redraw();
 
-                curbutton--;
-                if (curbutton < (BUTTON_RESET - BUTTON_BRIGHTNESS)) {
-                    curbutton = (BUTTON_OPTIONS - BUTTON_BRIGHTNESS);
-                }
+                curbutton ^= 1;
 
                 buttons[curbutton]->Turn_On();
                 buttons[curbutton]->Flag_To_Redraw();
@@ -327,10 +378,7 @@ void VisualControlsClass::Process(void)
                 buttons[curbutton]->Turn_Off();
                 buttons[curbutton]->Flag_To_Redraw();
 
-                curbutton++;
-                if (curbutton > (BUTTON_OPTIONS - BUTTON_BRIGHTNESS)) {
-                    curbutton = (BUTTON_RESET - BUTTON_BRIGHTNESS);
-                }
+                curbutton ^= 1;
 
                 buttons[curbutton]->Turn_On();
                 buttons[curbutton]->Flag_To_Redraw();
@@ -345,9 +393,10 @@ void VisualControlsClass::Process(void)
                 buttons[curbutton]->Flag_To_Redraw();
             }
 
-            curbutton--;
-            if (curbutton == (BUTTON_RESET - BUTTON_BRIGHTNESS)) {
+            if (curbutton <= (BUTTON_FULLSCREEN - BUTTON_BRIGHTNESS)) {
                 curbutton--;
+            } else {
+                curbutton -= 2;
             }
 
             if (curbutton < 0) {
@@ -370,8 +419,12 @@ void VisualControlsClass::Process(void)
                 buttons[curbutton]->Flag_To_Redraw();
             }
 
-            curbutton++;
-            if (curbutton > (BUTTON_RESET - BUTTON_BRIGHTNESS)) {
+            if (curbutton <= (BUTTON_TINT - BUTTON_BRIGHTNESS)) {
+                curbutton++;
+            } else {
+                curbutton += 2;
+            }
+            if (curbutton > (BUTTON_OPTIONS - BUTTON_BRIGHTNESS)) {
                 curbutton = 0;
             }
 
@@ -394,6 +447,16 @@ void VisualControlsClass::Process(void)
 
         if (pressed) {
             switch (selection) {
+            case BUTTON_FULLSCREEN:
+                fullscreenbtn.Set_Text(fullscreenbtn.IsOn ? TXT_ON : TXT_OFF);
+                Settings.Set_Windowed(!fullscreenbtn.IsOn);
+                break;
+
+            case BUTTON_PIXELDEPTH:
+                pixeldepthbtn.Set_Text(pixeldepthbtn.IsOn ? "24bpp" : "15bpp");
+                Settings.Set_PixelDepth24BPP(pixeldepthbtn.IsOn);
+                break;
+
             case (BUTTON_RESET):
                 brightness.Set_Value(128);
                 contrast.Set_Value(128);
